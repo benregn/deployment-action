@@ -30,7 +30,9 @@ async function run() {
       previews: ["flash", "ant-man"],
     });
 
-    const ref = core.getInput("ref", { required: false }) || context.ref;
+    const headRef = process.env.GITHUB_HEAD_REF as string;
+    const ref =
+      core.getInput("ref", { required: false }) || headRef || context.ref;
     const sha = core.getInput("sha", { required: false }) || context.sha;
     const logUrl =
       core.getInput("log_url", { required: false }) || defaultLogUrl;
