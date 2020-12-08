@@ -23,17 +23,19 @@ function isProductionEnvironment(
 async function run() {
   try {
     const context = github.context;
-    const logUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`;
+    const defaultLogUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`;
 
     const token = core.getInput("token", { required: true });
     const octokit = github.getOctokit(token);
 
     const ref = core.getInput("ref", { required: false }) || context.ref;
     const sha = core.getInput("sha", { required: false }) || context.sha;
-    const url = core.getInput("target_url", { required: false }) || logUrl;
+    const logUrl = core.getInput("log_url", { required: false }) || core.getInput("target_url", { required: false }) || defaultLogUrl;
     const environment =
       core.getInput("environment", { required: false }) || "production";
     const description = core.getInput("description", { required: false });
+    const environmentUrl =
+      core.getInput("environment_url", { required: false }) || "";
     const initialStatus =
       (core.getInput("initial_status", {
         required: false,
@@ -87,7 +89,7 @@ async function run() {
       description,
       state: initialStatus,
       log_url: logUrl,
-      environment_url: url,
+      environment_url: environmentUrl
     });
 
     core.setOutput("deployment_id", deployment.data.id.toString());
