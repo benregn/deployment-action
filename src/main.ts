@@ -26,7 +26,9 @@ async function run() {
     const defaultLogUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`;
 
     const token = core.getInput("token", { required: true });
-    const octokit = github.getOctokit(token);
+    const octokit = github.getOctokit(token, {
+      previews: ["flash", "ant-man"],
+    });
 
     const ref = core.getInput("ref", { required: false }) || context.ref;
     const sha = core.getInput("sha", { required: false }) || context.sha;
