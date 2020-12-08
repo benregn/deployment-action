@@ -10,6 +10,16 @@ type DeploymentState =
   | "pending"
   | "success";
 
+function isProductionEnvironment(
+  productionEnvironmentInput: string
+): boolean | undefined {
+  if (["true", "false"].includes(productionEnvironmentInput)) {
+    return productionEnvironmentInput === "true";
+  }
+  // Use undefined to signal, that the default behavior should be used.
+  return undefined;
+}
+
 async function run() {
   try {
     const context = github.context;
@@ -31,23 +41,27 @@ async function run() {
     const autoMergeStringInput = core.getInput("auto_merge", {
       required: false,
     });
-    const isTransientEnvironmentStringInput = core.getInput("transient_environment", {
-      required: false,
-    });
-    const isProductionEnvironmentStringInput = core.getInput("production_environment", {
-      required: false,
-    });
+    const transientEnvironmentStringInput = core.getInput(
+      "transient_environment",
+      {
+        required: false,
+      }
+    );
+    const productionEnvironmentStringInput = core.getInput(
+      "production_environment",
+      {
+        required: false,
+      }
+    );
 
     const auto_merge: boolean = autoMergeStringInput === "true";
 
-    const transient_environment: boolean = isTransientEnvironmentStringInput === "true";
+    const transient_environment: boolean =
+      transientEnvironmentStringInput === "true";
 
-    // Use undefined to signal, that the default behaviour should be used.
-    const production_environment: boolean | undefined = isProductionEnvironmentStringInput === "true"
-      ? true
-      : isProductionEnvironmentStringInput === "false"
-      ? false
-      : undefined;
+    const production_environment = isProductionEnvironment(
+      productionEnvironmentStringInput
+    );
 
     const deployment = await octokit.repos.createDeployment({
       owner: context.repo.owner,
