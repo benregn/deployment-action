@@ -10,6 +10,16 @@ type DeploymentState =
   | "pending"
   | "success";
 
+function isProductionEnvironment(
+  productionEnvironmentInput: string
+): boolean | undefined {
+  if (["true", "false"].includes(productionEnvironmentInput)) {
+    return productionEnvironmentInput === "true";
+  }
+  // Use undefined to signal, that the default behavior should be used.
+  return undefined;
+}
+
 async function run() {
   try {
     const context = github.context;
@@ -31,8 +41,27 @@ async function run() {
     const autoMergeStringInput = core.getInput("auto_merge", {
       required: false,
     });
+    const transientEnvironmentStringInput = core.getInput(
+      "transient_environment",
+      {
+        required: false,
+      }
+    );
+    const productionEnvironmentStringInput = core.getInput(
+      "production_environment",
+      {
+        required: false,
+      }
+    );
 
     const auto_merge: boolean = autoMergeStringInput === "true";
+
+    const transient_environment: boolean =
+      transientEnvironmentStringInput === "true";
+
+    const production_environment = isProductionEnvironment(
+      productionEnvironmentStringInput
+    );
 
     const deployment = await octokit.repos.createDeployment({
       owner: context.repo.owner,
@@ -41,7 +70,8 @@ async function run() {
       sha: sha,
       required_contexts: [],
       environment,
-      transient_environment: true,
+      transient_environment,
+      production_environment,
       auto_merge,
       description,
     });
