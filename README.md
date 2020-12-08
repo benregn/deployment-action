@@ -42,7 +42,7 @@ jobs:
         id: deployment
         with:
           token: "${{ github.token }}"
-          target_url: http://my-app-url.com
+          environment_url: http://my-app-url.com
           environment: production
         # more steps below where you run your deployment scripts inside the same action
 ```

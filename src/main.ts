@@ -30,7 +30,8 @@ async function run() {
 
     const ref = core.getInput("ref", { required: false }) || context.ref;
     const sha = core.getInput("sha", { required: false }) || context.sha;
-    const logUrl = core.getInput("log_url", { required: false }) || core.getInput("target_url", { required: false }) || defaultLogUrl;
+    const logUrl =
+      core.getInput("log_url", { required: false }) || defaultLogUrl;
     const environment =
       core.getInput("environment", { required: false }) || "production";
     const description = core.getInput("description", { required: false });
