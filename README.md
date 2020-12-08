@@ -19,7 +19,7 @@ A GitHub action to create [Deployments](https://developer.github.com/v3/repos/de
 
 | name            | description                                            |
 | --------------- | ------------------------------------------------------ |
-| `deployment_id` | The ID of the deployment as returned by the GitHub API |
+| `deployment-id` | The ID of the deployment as returned by the GitHub API |
 
 ## Example usage
 
@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: chrnorm/deployment-action@releases/v1
+      - uses: benregn/deployment-action@v3.0.1
         name: Create GitHub deployment
         id: deployment
         with:
@@ -90,7 +90,7 @@ jobs:
           token: "${{ github.token }}"
           environment_url: http://my-app-url.com
           state: "success"
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          deployment_id: ${{ steps.deployment.outputs.deployment-id }}
 
       - name: Update deployment status (failure)
         if: failure()
@@ -99,5 +99,5 @@ jobs:
           token: "${{ github.token }}"
           environment_url: http://my-app-url.com
           state: "failure"
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          deployment_id: ${{ steps.deployment.outputs.deployment-id }}
 ```
